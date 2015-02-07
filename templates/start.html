@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+<!-- start.html -->
+{% block title %}No New Friends{% endblock %}
+
+{% block body %}
+<script language="JavaScript" src="gen_validatorv4.js"
+    type="text/javascript" xml:space="preserve"></script>
+<div class = "row splash-page">
+	<div class = "medium-9 medium-centered columns">
+		<center><h1><strong>No New Friends</strong></h1>
+		<h4>A way to get to know people out of your circle.</h2></center>
+			<form action="/submit" method="post">
+  				<fieldset>
+      				<input type="text" name="name" placeholder="Full Name" required>
+        			<input type="email" name="email" placeholder="Email (@columbia.edu)" required>
+      				<input type="tel" name="phone-number" placeholder="Mobile Number" required>
+      				<input type="text" name="social-media" placeholder="Facebook/Twitter/Instagram URL" required>
+      				<textarea rows = "3" name="about" placeholder="What do you want to cover in your chats? You can talk about life, classes and more. Topics might be philosophy, travel, string theory, food, technology... Get creative!"></textarea>
+      				<button class="postfix" type="submit">Go!</button>
+  				</fieldset>
+			</form>
+			<script language="JavaScript" type="text/javascript"
+    xml:space="preserve">
+  var frmvalidator  = new Validator("myform");
+  frmvalidator.addValidation("name","req","Please enter your name!");
+  frmvalidator.addValidation("name","maxlen=20","The maximum length is twenty.");
+  frmvalidator.addValidation("name","alpha","Alphabetical characters only!");
+  
+  frmvalidator.addValidation("email","maxlen=20","Your email's too long!");
+  frmvalidator.addValidation("email","req","We need your school email!");
+  frmvalidator.addValidation("email","email","Is that an email address?");
+  
+  frmvalidator.addValidation("phone-number","maxlen=20","The number's too long.");
+  frmvalidator.addValidation("phone-number","req","We need your number!");
+  frmvalidator.addValidation("phone-number","numeric","Only numbers, please!");
+  
+  frmvalidator.addValidation("social-media","maxlen=50","That link's too long!");
+  frmvalidator.addValidation("social-media","req","We need a social media link!");
+
+  frmvalidator.addValidation("about","maxlen=200","Whoops, you have too many topics!");
+  frmvalidator.addValidation("about","req","We need a few topics from you!");
+</script>
+	</div>
+</div>
+{% endblock %}
