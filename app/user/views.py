@@ -5,6 +5,7 @@ from datetime import datetime
 from app.models import User
 # from app.email import send_email
 from app import db, bcrypt
+from app.decorators import check_confirmed
 from app.email import send_email
 from app.token import generate_confirmation_token, confirm_token
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
@@ -33,9 +34,30 @@ def register():
         login_user(user)
 
         flash('A confirmation email has been sent via email.', 'success')
-        return redirect(url_for("main.home"))
+        return redirect(url_for("user.unconfirmed"))
 
     return render_template('user/register.html', form=form)
+
+
+@user_blueprint.route('/unconfirmed')
+@login_required
+def unconfirmed():
+    if current_user.confirmed:
+        return redirect('main.home')
+    flash('Please confirm your account!', 'warning')
+    return render_template('user/unconfirmed.html')
+
+
+@user_blueprint.route('/resend')
+@login_required
+def resend_confirmation():
+    token = generate_confirmation_token(current_user.email)
+    confirm_url = url_for('user.confirm_email', token=token, _external=True)
+    html = render_template('user/activate.html', confirm_url=confirm_url)
+    subject = "Please confirm your email"
+    send_email(current_user.email, subject, html)
+    flash('A new confirmation email has been sent.', 'success')
+    return redirect(url_for('user.unconfirmed'))
 
 
 @user_blueprint.route('/confirm/<token>')
@@ -83,6 +105,7 @@ def logout():
 
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @login_required
+@check_confirmed
 def profile():
     form = ChangePasswordForm(request.form)
     if form.validate_on_submit():

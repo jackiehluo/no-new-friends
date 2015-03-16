@@ -11,6 +11,7 @@ class LoginForm(Form):
 
 
 class RegisterForm(Form):
+
     email = TextField(
         'email',
         validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
@@ -33,6 +34,10 @@ class RegisterForm(Form):
         user = User.query.filter_by(email=self.email.data).first()
         if user:
             self.email.errors.append("Email already registered")
+            return False
+        email_domain = self.email.data.split('@')[-1]
+        if email_domain != 'columbia.edu':
+            self.email.errors.append("Please enter a @columbia.edu email.")
             return False
         return True
 
