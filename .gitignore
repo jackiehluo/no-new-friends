@@ -6,3 +6,4 @@ flask
 bootstrap.sh
 vagrantfile
 .vagrant/
+db_repository/
