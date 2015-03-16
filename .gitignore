@@ -1,9 +1,14 @@
 *.pyc
 *.pyo
+*.sqlite
+.DS_Store
+.coverage
+flask
 app.db
 search.db
-flask
+config.py
 bootstrap.sh
 vagrantfile
 .vagrant/
 db_repository/
+tmp/

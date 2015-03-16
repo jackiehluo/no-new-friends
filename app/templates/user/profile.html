@@ -1,10 +1,14 @@
 {% extends "base.html" %}
+
 {% block content %}
+
 <h1>Your Profile</h1>
 <br>
+
 {% if current_user.is_authenticated() %}
   <p>Email: {{current_user.email}}</p>
 {% endif %}
+
 <h2>Change Password</h2>
 <br>
 <form class="form-reset" role="form" method="post" action="">
@@ -31,4 +35,6 @@
   </p>
   <button class="btn btn-success" type="submit">Update</button>
 </form>
+
+
 {% endblock %}

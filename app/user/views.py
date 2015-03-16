@@ -1,31 +1,20 @@
-from flask import Flask, render_template, url_for, flash, request
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask import render_template, Blueprint, url_for, redirect, flash, request
+from flask.ext.login import login_user, logout_user, login_required, current_user
 from datetime import datetime
-from .forms import ChangePasswordForm, LoginForm, RegisterForm
-from .email import send_email
-from .models import User
-from .token import generate_confirmation_token, confirm_token
-from app import app
 
-@app.errorhandler(404)
-def not_found(error):
-	return "Sorry, you might be in the wrong place!", 404
+from app.models import User
+# from app.email import send_email
+from app import db, bcrypt
+from app.email import send_email
+from app.token import generate_confirmation_token, confirm_token
+from .forms import LoginForm, RegisterForm, ChangePasswordForm
 
-@app.errorhandler(500)
-def internal_server_error(error):
-	return "Whoops, what just happened? We'll get on it.", 500
+user_blueprint = Blueprint('user', __name__,)
 
-@app.route("/")
-@app.route("/index")
-def index():
-	user = {'name': 'Jackie Luo'}
-	return render_template('index.html',
-							title = 'Home',
-							user = user)
 
-@app.route('/register', methods=['GET', 'POST'])
+@user_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm()
+    form = RegisterForm(request.form)
     if form.validate_on_submit():
         user = User(
             email=form.email.data,
@@ -34,17 +23,22 @@ def register():
         )
         db.session.add(user)
         db.session.commit()
+
         token = generate_confirmation_token(user.email)
-        confirm_url = url_for('confirm_email', token=token, _external=True)
-        html = render_template('activate.html', confirm_url=confirm_url)
+        confirm_url = url_for('user.confirm_email', token=token, _external=True)
+        html = render_template('user/activate.html', confirm_url=confirm_url)
         subject = "Please confirm your email"
         send_email(user.email, subject, html)
-        login_user(user)
-        flash('A confirmation email has been sent via email.', 'success')
-        return redirect(url_for('index'))
-    return render_template('register.html', form = form)
 
-@app.route('/confirm/<token>')
+        login_user(user)
+
+        flash('A confirmation email has been sent via email.', 'success')
+        return redirect(url_for("main.home"))
+
+    return render_template('user/register.html', form=form)
+
+
+@user_blueprint.route('/confirm/<token>')
 @login_required
 def confirm_email(token):
     try:
@@ -60,9 +54,10 @@ def confirm_email(token):
         db.session.add(user)
         db.session.commit()
         flash('You have confirmed your account. Thanks!', 'success')
-    return redirect(url_for('index'))
+    return redirect(url_for('main.home'))
 
-@app.route('/login', methods=['GET', 'POST'])
+
+@user_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
@@ -71,20 +66,22 @@ def login():
                 user.password, request.form['password']):
             login_user(user)
             flash('Welcome.', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('main.home'))
         else:
             flash('Invalid email and/or password.', 'danger')
-            return render_template('login.html', form=form)
-    return render_template('login.html', form=form)
+            return render_template('user/login.html', form=form)
+    return render_template('user/login.html', form=form)
 
-@app.route('/logout')
+
+@user_blueprint.route('/logout')
 @login_required
 def logout():
     logout_user()
     flash('You were logged out.', 'success')
-    return redirect(url_for('login'))
+    return redirect(url_for('user.login'))
 
-@app.route('/profile', methods=['GET', 'POST'])
+
+@user_blueprint.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     form = ChangePasswordForm(request.form)
@@ -94,8 +91,8 @@ def profile():
             user.password = bcrypt.generate_password_hash(form.password.data)
             db.session.commit()
             flash('Password successfully changed.', 'success')
-            return redirect(url_for('profile'))
+            return redirect(url_for('user.profile'))
         else:
             flash('Password change was unsuccessful.', 'danger')
-            return redirect(url_for('profile'))
-    return render_template('profile.html', form=form)
+            return redirect(url_for('user.profile'))
+    return render_template('user/profile.html', form=form)

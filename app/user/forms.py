@@ -1,11 +1,14 @@
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
-from .models import User
+
+from app.models import User
+
 
 class LoginForm(Form):
     email = TextField('email', validators=[DataRequired(), Email()])
     password = PasswordField('password', validators=[DataRequired()])
+
 
 class RegisterForm(Form):
     email = TextField(
@@ -29,9 +32,10 @@ class RegisterForm(Form):
             return False
         user = User.query.filter_by(email=self.email.data).first()
         if user:
-            self.email.errors.append("Email already registered.")
+            self.email.errors.append("Email already registered")
             return False
         return True
+
 
 class ChangePasswordForm(Form):
     password = PasswordField(
