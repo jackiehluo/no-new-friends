@@ -1,6 +1,7 @@
 from flask_wtf import Form
 from wtforms import TextField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
+import re
 
 from app.models import User
 
@@ -11,14 +12,21 @@ class LoginForm(Form):
 
 
 class RegisterForm(Form):
-
+    name = TextField(
+        'name',
+        validators=[DataRequired(), Length(min=4, max=25)])
+    facebook = TextField(
+        'facebook',
+        validators=[DataRequired(), Length(min=12, max=40)])
+    about_me = TextField(
+        'about_me',
+        validators=[DataRequired(), Length(min=10, max=160)])
     email = TextField(
         'email',
         validators=[DataRequired(), Email(message=None), Length(min=6, max=40)])
     password = PasswordField(
         'password',
-        validators=[DataRequired(), Length(min=6, max=25)]
-    )
+        validators=[DataRequired(), Length(min=6, max=25)])
     confirm = PasswordField(
         'Repeat password',
         validators=[
@@ -30,6 +38,12 @@ class RegisterForm(Form):
     def validate(self):
         initial_validation = super(RegisterForm, self).validate()
         if not initial_validation:
+            return False
+        facebook_url = re.findall(r'https\:\/\/www\.([a-zA-Z0-9\.-_]*)\/', self.facebook.data) \
+                or re.findall(r'www\.([a-zA-Z0-9\.-_]*)\/', self.facebook.data) \
+                or re.findall(r'([a-zA-Z0-9\.-_]*)\/', self.facebook.data)
+        if facebook_url[0] != 'facebook.com':
+            self.facebook.errors.append("Please enter your Facebook URL.")
             return False
         user = User.query.filter_by(email=self.email.data).first()
         if user:

@@ -6,7 +6,8 @@
 <br>
 
 {% if current_user.is_authenticated() %}
-  <p>Email: {{current_user.email}}</p>
+  <p><img src="{{ current_user.picture(200, 200) }}"></p><br>
+  <p>Name: {{current_user.name}}</p>
 {% endif %}
 
 <h2>Change Password</h2>
@@ -14,7 +15,7 @@
 <form class="form-reset" role="form" method="post" action="">
   {{ form.csrf_token }}
   <p>
-    {{ form.password(placeholder="password") }}
+    {{ form.password(placeholder="New Password") }}
     <span class="error">
       {% if form.password.errors %}
         {% for error in form.password.errors %}
@@ -24,7 +25,7 @@
     </span>
   </p>
   <p>
-  {{ form.confirm(placeholder="confirm") }}
+  {{ form.confirm(placeholder="Confirm") }}
     <span class="error">
       {% if form.confirm.errors %}
         {% for error in form.confirm.errors %}

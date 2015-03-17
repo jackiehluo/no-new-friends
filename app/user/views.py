@@ -3,7 +3,6 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 from datetime import datetime
 
 from app.models import User
-# from app.email import send_email
 from app import db, bcrypt
 from app.decorators import check_confirmed
 from app.email import send_email
@@ -18,6 +17,9 @@ def register():
     form = RegisterForm(request.form)
     if form.validate_on_submit():
         user = User(
+            name=form.name.data,
+            facebook=form.facebook.data,
+            about_me=form.about_me.data,
             email=form.email.data,
             password=form.password.data,
             confirmed=False

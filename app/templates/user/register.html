@@ -2,10 +2,40 @@
 
 {% block content %}
 
-<h1>Please Register</h1>
+<h1>Register</h1>
 <br>
 <form class="form-signin" role="form" method="post" action="">
   {{ form.csrf_token }}
+  {{ form.name(placeholder="Full Name") }}
+    <span class="error">
+      {% if form.name.errors %}
+        {% for error in form.name.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.facebook(placeholder="Facebook URL") }}
+    <span class="error">
+      {% if form.facebook.errors %}
+        {% for error in form.facebook.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
+  <p>
+  {{ form.about_me(placeholder="Interests") }}
+    <span class="error">
+      {% if form.about_me.errors %}
+        {% for error in form.about_me.errors %}
+          {{ error }}
+        {% endfor %}
+      {% endif %}
+    </span>
+  </p>
+  <p>
   {{ form.email(placeholder="Email (@columbia.edu)") }}
     <span class="error">
       {% if form.email.errors %}

@@ -19,10 +19,10 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.is_authenticated() %}
-          <li><a href="{{ url_for('user.logout') }}">Logout</a></li>
+          <li><a href="{{ url_for('user.logout') }}">Log Out</a></li>
         {% else %}
-          <li><a href="{{ url_for('user.register') }}">Sign up</a></li>
-          <li><a href="{{ url_for('user.login') }}"><span class="glyphicon glyphicon-user"></span>&nbsp;Login</a></li>
+          <li><a href="{{ url_for('user.register') }}">Register</a></li>
+          <li><a href="{{ url_for('user.login') }}"><span class="glyphicon glyphicon-user"></span>&nbsp;Log In</a></li>
         {% endif %}
       </ul>
     </div>
