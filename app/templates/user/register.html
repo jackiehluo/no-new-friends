@@ -16,16 +16,6 @@
     </span>
   </p>
   <p>
-  {{ form.facebook(placeholder="Facebook URL") }}
-    <span class="error">
-      {% if form.facebook.errors %}
-        {% for error in form.facebook.errors %}
-          {{ error }}
-        {% endfor %}
-      {% endif %}
-    </span>
-  </p>
-  <p>
   {{ form.about_me(placeholder="Interests") }}
     <span class="error">
       {% if form.about_me.errors %}

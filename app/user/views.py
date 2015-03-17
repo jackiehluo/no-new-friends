@@ -1,16 +1,19 @@
-from flask import render_template, Blueprint, url_for, redirect, flash, request
+from flask import render_template, Blueprint, url_for, redirect, flash, request, make_response
 from flask.ext.login import login_user, logout_user, login_required, current_user
+from authomatic.adapters import WerkzeugAdapter
+from authomatic import Authomatic
 from datetime import datetime
 
-from app.models import User
 from app import db, bcrypt
 from app.decorators import check_confirmed
 from app.email import send_email
+from app.models import User
 from app.token import generate_confirmation_token, confirm_token
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
+from config import CONFIG
 
 user_blueprint = Blueprint('user', __name__,)
-
+authomatic = Authomatic(CONFIG, 'Eugenides_14', report_errors=False)
 
 @user_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
@@ -18,7 +21,6 @@ def register():
     if form.validate_on_submit():
         user = User(
             name=form.name.data,
-            facebook=form.facebook.data,
             about_me=form.about_me.data,
             email=form.email.data,
             password=form.password.data,
@@ -121,3 +123,22 @@ def profile():
             flash('Password change was unsuccessful.', 'danger')
             return redirect(url_for('user.profile'))
     return render_template('user/profile.html', form=form)
+
+
+@user_blueprint.route('/login/<provider_name>/', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def social_login(provider_name):
+    form = ChangePasswordForm(request.form)
+    response = make_response()
+    result = authomatic.login(WerkzeugAdapter(request, response), provider_name)
+    if result:
+        if result.user:
+            result.user.update()
+            user = User.query.filter_by(email=current_user.email).first()
+            if user:
+                user.facebook = result.user.id
+                db.session.commit()
+        flash('Facebook added!', 'success')
+        return render_template('user/profile.html', form=form, result=result)
+    return response

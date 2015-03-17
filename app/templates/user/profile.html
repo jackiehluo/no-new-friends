@@ -3,11 +3,19 @@
 {% block content %}
 
 <h1>Your Profile</h1>
-<br>
+
+{% if current_user.has_facebook() %}
+<p><img src="{{ current_user.picture(200, 200) }}"></p>
+{% endif %}
 
 {% if current_user.is_authenticated() %}
-  <p><img src="{{ current_user.picture(200, 200) }}"></p><br>
-  <p>Name: {{current_user.name}}</p>
+  <p><strong>Name</strong>: {{current_user.name}}</p>
+  {% if current_user.has_facebook() %}
+  <p><strong>Links</strong>: <a href="http://www.facebook.com/{{ current_user.facebook }}">Facebook</a></p>
+  {% endif %}
+  {% if not current_user.has_facebook() %}
+  <p><a href="login/fb">Add Facebook Profile Picture</a></p><br>
+  {% endif %}
 {% endif %}
 
 <h2>Change Password</h2>
