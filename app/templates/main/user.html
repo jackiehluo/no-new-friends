@@ -1,0 +1,13 @@
+<table class="table table-hover">
+    <tr>
+        <td width="80px">
+          {% if user.has_facebook() %}
+            <img src="{{ user.picture(80, 80) }}" />
+          {% endif %}
+        </td>
+        <td>
+            <p><strong>{{ user.name }}</strong></p>
+            <p>{{ user.about_me }}</p>
+        </td>
+    </tr>
+</table>

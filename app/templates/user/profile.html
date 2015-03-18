@@ -10,6 +10,7 @@
 
 {% if current_user.is_authenticated() %}
   <p><strong>Name</strong>: {{current_user.name}}</p>
+  <p><strong>Interests</strong>: {{current_user.about_me}}</p>
   {% if current_user.has_facebook() %}
   <p><strong>Links</strong>: <a href="http://www.facebook.com/{{ current_user.facebook }}">Facebook</a></p>
   {% endif %}

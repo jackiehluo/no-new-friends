@@ -9,6 +9,7 @@ search.db
 config.py
 bootstrap.sh
 vagrantfile
+Procfile
 .vagrant/
 db_repository/
 tmp/

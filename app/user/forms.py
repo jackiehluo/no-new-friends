@@ -40,10 +40,10 @@ class RegisterForm(Form):
         if user:
             self.email.errors.append("Email already registered")
             return False
-        email_domain = self.email.data.split('@')[-1]
-        if email_domain != 'columbia.edu':
-            self.email.errors.append("Please enter a @columbia.edu email.")
-            return False
+        #email_domain = self.email.data.split('@')[-1]
+        #if email_domain != 'columbia.edu':
+        #    self.email.errors.append("Please enter a @columbia.edu email.")
+        #    return False
         return True
 
 

@@ -1,6 +1,7 @@
 from datetime import datetime
 import requests
 from urlparse import urlparse
+
 from app import db, bcrypt
 from config import APP_TOKEN
 
@@ -11,7 +12,7 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    facebook = db.Column(db.String, unique=True, nullable=True)
+    facebook = db.Column(db.String, nullable=True)
     about_me = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)

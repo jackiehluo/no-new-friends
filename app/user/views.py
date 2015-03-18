@@ -10,10 +10,22 @@ from app.email import send_email
 from app.models import User
 from app.token import generate_confirmation_token, confirm_token
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
-from config import CONFIG
+from config import CONFIG, USERS_PER_PAGE
 
 user_blueprint = Blueprint('user', __name__,)
 authomatic = Authomatic(CONFIG, 'Eugenides_14', report_errors=False)
+
+
+@user_blueprint.route('/')
+@user_blueprint.route('/index')
+@login_required
+@check_confirmed
+def index():
+    users = User.query.all()
+    return render_template('main/index.html',
+                           title='Home',
+                           users=users)
+
 
 @user_blueprint.route('/register', methods=['GET', 'POST'])
 def register():

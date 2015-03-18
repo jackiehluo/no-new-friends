@@ -2,4 +2,9 @@
 {% block content %}
 
 <h1>Welcome!</h1>
+<br>
+{% for user in users %}
+  {% include 'main/user.html' %}
+{% endfor %}
+
 {% endblock %}
