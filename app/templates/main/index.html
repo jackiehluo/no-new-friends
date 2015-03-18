@@ -4,7 +4,9 @@
 <h1>Welcome!</h1>
 <br>
 {% for user in users %}
-  {% include 'main/user.html' %}
+  {% if user.confirmed %}
+    {% include 'main/user.html' %}
+  {% endif %}
 {% endfor %}
 
 {% endblock %}
