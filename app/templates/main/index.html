@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Welcome, {{current_user.name}}!</h1>
+<h1>Welcome, {{current_user.first_name}}!</h1>
 <br>
 {% for user in users %}
   {% if user.confirmed and user.id != current_user.id %}

@@ -10,10 +10,10 @@ from app.email import send_email
 from app.models import User
 from app.token import generate_confirmation_token, confirm_token
 from .forms import LoginForm, RegisterForm, ChangePasswordForm
-from config import CONFIG, USERS_PER_PAGE
+from config import CONFIG, SECRET_KEY, USERS_PER_PAGE
 
 user_blueprint = Blueprint('user', __name__,)
-authomatic = Authomatic(CONFIG, 'Eugenides_14', report_errors=False)
+authomatic = Authomatic(CONFIG, SECRET_KEY, report_errors=False)
 
 
 @user_blueprint.route('/register', methods=['GET', 'POST'])
@@ -21,8 +21,11 @@ def register():
     form = RegisterForm(request.form)
     if form.validate_on_submit():
         user = User(
-            name=form.name.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            major = form.major.data,
             about_me=form.about_me.data,
+            phone=form.phone.data,
             email=form.email.data,
             password=form.password.data,
             confirmed=False
