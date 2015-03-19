@@ -102,14 +102,6 @@ def login():
     return render_template('user/login.html', form=form)
 
 
-@user_blueprint.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    flash('You were logged out.', 'success')
-    return redirect(url_for('user.login'))
-
-
 @user_blueprint.route('/profile', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
@@ -145,3 +137,28 @@ def social_login(provider_name):
         flash('Facebook added!', 'success')
         return render_template('user/profile.html', form=form, result=result)
     return response
+
+
+@user_blueprint.route('/contact/<id>')
+@login_required
+@check_confirmed
+def contact(id):
+    user = User.query.filter_by(id=id).first()
+    first_name = current_user.first_name
+    last_name = current_user.last_name
+    interests = current_user.about_me
+    phone = '(%s) %s-%s' % (current_user.phone[:3], current_user.phone[3:6], current_user.phone[6::])
+    html = render_template('user/contact.html', first_name=first_name, last_name=last_name,
+        interests=interests, phone=phone)
+    subject = 'Someone on No New Friends wants to meet you!'
+    send_email(user.email, subject, html)
+    flash('You just messaged someone!', 'success')
+    return redirect(url_for("main.home"))
+
+
+@user_blueprint.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You were logged out.', 'success')
+    return redirect(url_for('user.login'))

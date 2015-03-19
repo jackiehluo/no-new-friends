@@ -9,5 +9,10 @@
             <p><strong>{{ user.first_name }} {{ user.last_name }}</strong> ({{ user.major }})</p>
             <p>{{ user.about_me }}</p>
         </td>
+        <td>
+            <div class="pull-right">
+            <a class="btn btn-default" href="{{ url_for('user.contact', id=user.id) }}" role="button">Message</a>
+            </div>
+        </td>
     </tr>
 </table>
