@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Welcome!</h1>
+<h1>Welcome, {{current_user.name}}!</h1>
 <br>
 {% for user in users %}
-  {% if user.confirmed %}
+  {% if user.confirmed and user.id != current_user.id %}
     {% include 'main/user.html' %}
   {% endif %}
 {% endfor %}
