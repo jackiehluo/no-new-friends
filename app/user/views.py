@@ -9,7 +9,7 @@ from app.decorators import check_confirmed
 from app.email import send_email
 from app.models import User
 from app.token import generate_confirmation_token, confirm_token
-from .forms import LoginForm, RegisterForm, ChangePasswordForm
+from .forms import LoginForm, RegisterForm, ChangePasswordForm, EditForm
 from config import CONFIG, SECRET_KEY, USERS_PER_PAGE
 
 user_blueprint = Blueprint('user', __name__,)
@@ -24,7 +24,7 @@ def register():
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             major = form.major.data,
-            about_me=form.about_me.data,
+            interests=form.interests.data,
             phone=form.phone.data,
             email=form.email.data,
             password=form.password.data,
@@ -120,6 +120,30 @@ def profile():
     return render_template('user/profile.html', form=form)
 
 
+@user_blueprint.route('/edit', methods=['GET', 'POST'])
+@login_required
+@check_confirmed
+def edit():
+    form = EditForm(request.form)
+    user = User.query.filter_by(email=current_user.email).first()
+    if form.validate_on_submit():
+        if user:
+            user.about_me = form.about_me.data
+            user.major = form.major.data
+            user.interests = form.interests.data
+            db.session.commit()
+            flash('Profile successfully updated.', 'success')
+            return redirect(url_for('user.profile'))
+        else:
+            flash('Profile update unsuccessful.', 'danger')
+            return redirect(url_for('user.profile'))
+    elif request.method != "POST":
+        form.about_me.data = user.about_me
+        form.major.data = user.major
+        form.interests.data = user.interests
+    return render_template('user/edit.html', form=form)
+
+
 @user_blueprint.route('/login/<provider_name>/', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
@@ -146,7 +170,7 @@ def contact(id):
     user = User.query.filter_by(id=id).first()
     first_name = current_user.first_name
     last_name = current_user.last_name
-    interests = current_user.about_me
+    interests = current_user.interests
     phone = '(%s) %s-%s' % (current_user.phone[:3], current_user.phone[3:6], current_user.phone[6::])
     html = render_template('user/contact.html', first_name=first_name, last_name=last_name,
         interests=interests, phone=phone)

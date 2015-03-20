@@ -21,8 +21,8 @@ class RegisterForm(Form):
     major = TextField(
         'major',
         validators=[DataRequired(), Length(min=6, max=40)])
-    about_me = TextField(
-        'about_me',
+    interests = TextField(
+        'interests',
         validators=[DataRequired(), Length(min=15, max=140)])
     phone = TextField(
         'phone',
@@ -45,11 +45,11 @@ class RegisterForm(Form):
             return False
         user = User.query.filter_by(email=self.email.data).first()
         if user:
-            self.email.errors.append("Email already registered")
+            self.email.errors.append("Email already registered.")
             return False
         user = User.query.filter_by(phone=self.phone.data).first()
         if user:
-            self.phone.errors.append("Phone number already registered")
+            self.phone.errors.append("Phone number already registered.")
             return False
         #email_domain = self.email.data.split('@')[-1]
         #if email_domain != 'columbia.edu':
@@ -67,3 +67,15 @@ class ChangePasswordForm(Form):
         validators=[
             DataRequired(),
             EqualTo('password', message='Passwords must match.')])
+
+
+class EditForm(Form):
+    about_me = TextField(
+        'about_me',
+        validators=[Length(min=2, max=140)])
+    major = TextField(
+        'major',
+        validators=[Length(min=6, max=40)])
+    interests = TextField(
+        'interests',
+        validators=[Length(min=15, max=140)])

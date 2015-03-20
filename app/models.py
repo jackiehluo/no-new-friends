@@ -1,6 +1,6 @@
 from datetime import datetime
-import requests
 from urlparse import urlparse
+import requests
 
 from app import db, bcrypt
 from config import APP_TOKEN
@@ -14,7 +14,8 @@ class User(db.Model):
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
     major = db.Column(db.String, nullable=False)
-    about_me = db.Column(db.String, nullable=False)
+    about_me = db.Column(db.String, nullable=True)
+    interests = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
@@ -24,12 +25,12 @@ class User(db.Model):
     confirmed_on = db.Column(db.DateTime, nullable=True)
     facebook = db.Column(db.String, nullable=True)
 
-    def __init__(self, first_name, last_name, major, about_me, phone, email,
+    def __init__(self, first_name, last_name, major, interests, phone, email,
                 password, confirmed, paid=False, admin=False, confirmed_on=None):
         self.first_name = first_name
         self.last_name = last_name
         self.major = major
-        self.about_me = about_me
+        self.interests = interests
         self.phone = phone
         self.email = email
         self.password = bcrypt.generate_password_hash(password)
@@ -52,6 +53,11 @@ class User(db.Model):
 
     def has_facebook(self):
         if self.facebook:
+            return True
+        return False
+
+    def has_about_me(self):
+        if self.about_me:
             return True
         return False
 

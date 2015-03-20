@@ -2,26 +2,32 @@
 
 {% block content %}
 
-<h1>Your Profile</h1>
+<h1>
+  {{current_user.first_name}} {{current_user.last_name}}
+  <div class="pull-right">
+    <a class="btn btn-default" href="{{ url_for('user.edit') }}" role="button">Edit Profile</a>
+  </div>
+</h1><br>
 
 {% if current_user.has_facebook() %}
 <p><img src="{{ current_user.picture(200, 200) }}"></p>
 {% endif %}
 
 {% if current_user.is_authenticated() %}
-  <p><strong>Name</strong>: {{current_user.first_name}} {{current_user.last_name}}</p>
-  <p><strong>Major</strong>: {{current_user.major}}</p>
-  <p><strong>Interests</strong>: {{current_user.about_me}}</p>
+  {% if current_user.has_about_me() %}
+  <p>{{current_user.about_me}}</p>
+  {% endif %}
+  <p><strong>Major</strong>: {{current_user.major}}<br>
+  <strong>Interests</strong>: {{current_user.interests}}<br>
   {% if current_user.has_facebook() %}
-  <p><strong>Links</strong>: <a href="http://www.facebook.com/{{ current_user.facebook }}">Facebook</a></p>
+  <strong>Links</strong>: <a href="http://www.facebook.com/{{ current_user.facebook }}">Facebook</a><br>
   {% endif %}
   {% if not current_user.has_facebook() %}
-  <p><a href="login/fb">Add Facebook Profile Picture</a></p><br>
+  <a href="login/fb">Add your Facebook profile picture and link!</a><br><br>
   {% endif %}
-{% endif %}
+{% endif %}</p>
 
-<h2>Change Password</h2>
-<br>
+<h3>Change Password</h3>
 <form class="form-reset" role="form" method="post" action="">
   {{ form.csrf_token }}
   <p>
@@ -46,6 +52,5 @@
   </p>
   <button class="btn btn-success" type="submit">Update</button>
 </form>
-
 
 {% endblock %}
