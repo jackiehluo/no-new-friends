@@ -3,10 +3,19 @@
 
 <h1>Welcome, {{current_user.first_name}}!</h1>
 <br>
-{% for user in users %}
+{% for user in users.items %}
   {% if user.confirmed and user.id != current_user.id %}
     {% include 'main/user.html' %}
   {% endif %}
 {% endfor %}
+
+<ul class="pager">
+{% if users.has_prev %}
+  <li class="previous"><a href="{{ url_for('main.home', page=users.prev_num) }}">Previous</a></li>
+{% endif %}
+{% if users.has_next %}
+  <li class="next"><a href="{{ url_for('main.home', page=users.next_num) }}">Next</a></li>
+{% endif %}
+</ul>
 
 {% endblock %}

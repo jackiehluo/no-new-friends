@@ -5,27 +5,35 @@
 <h1>
   {{current_user.first_name}} {{current_user.last_name}}
   <div class="pull-right">
-    <a class="btn btn-default" href="{{ url_for('user.edit') }}" role="button">Edit Profile</a>
+    <a class="btn btn-primary" href="{{ url_for('user.edit') }}" role="button">Edit Profile</a>
   </div>
 </h1><br>
 
-{% if current_user.has_facebook() %}
-<p><img src="{{ current_user.picture(200, 200) }}"></p>
-{% endif %}
 
-{% if current_user.is_authenticated() %}
-  {% if current_user.has_about_me() %}
-  <p>{{current_user.about_me}}</p>
-  {% endif %}
-  <p><strong>Major</strong>: {{current_user.major}}<br>
-  <strong>Interests</strong>: {{current_user.interests}}<br>
-  {% if current_user.has_facebook() %}
-  <strong>Links</strong>: <a href="http://www.facebook.com/{{ current_user.facebook }}">Facebook</a><br>
-  {% endif %}
-  {% if not current_user.has_facebook() %}
-  <a href="login/fb">Add your Facebook profile picture and link!</a><br><br>
-  {% endif %}
-{% endif %}</p>
+<table class="table">
+  <tr>
+    <td width="200px">
+      {% if current_user.has_facebook() %}
+        <p><img src="{{ current_user.picture(200, 200) }}"></p>
+      {% else %}
+        <p><img src="/static/grey.jpg"></p>
+      {% endif %}
+    </td>
+    <td>
+      <strong>Major</strong>: {{current_user.major}}<br>
+      <strong>Interests</strong>: {{current_user.interests}}<br>
+      {% if current_user.has_facebook() %}
+      <strong>Links</strong>: <a href="http://www.facebook.com/{{ current_user.facebook }}">Facebook</a><br>
+      {% endif %}
+      {% if not current_user.has_facebook() %}
+        <a href="login/fb">Add your Facebook profile picture and link!</a><br><br>
+      {% endif %}</p>
+      {% if current_user.has_about_me() %}
+        <p>{{current_user.about_me}}</p>
+      {% endif %}
+    </td>
+    </tr>
+</table>
 
 <h3>Change Password</h3>
 <form class="form-reset" role="form" method="post" action="">

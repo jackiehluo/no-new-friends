@@ -10,7 +10,7 @@ from app.email import send_email
 from app.models import User
 from app.token import generate_confirmation_token, confirm_token
 from .forms import LoginForm, RegisterForm, ChangePasswordForm, EditForm
-from config import CONFIG, SECRET_KEY, USERS_PER_PAGE
+from config import CONFIG, SECRET_KEY
 
 user_blueprint = Blueprint('user', __name__,)
 authomatic = Authomatic(CONFIG, SECRET_KEY, report_errors=False)
@@ -36,7 +36,7 @@ def register():
         token = generate_confirmation_token(user.email)
         confirm_url = url_for('user.confirm_email', token=token, _external=True)
         html = render_template('user/activate.html', confirm_url=confirm_url)
-        subject = "Please confirm your email"
+        subject = "Confirm your email for No New Friends!"
         send_email(user.email, subject, html)
 
         login_user(user)
@@ -62,7 +62,7 @@ def resend_confirmation():
     token = generate_confirmation_token(current_user.email)
     confirm_url = url_for('user.confirm_email', token=token, _external=True)
     html = render_template('user/activate.html', confirm_url=confirm_url)
-    subject = "Please confirm your email"
+    subject = "Confirm your email for No New Friends!"
     send_email(current_user.email, subject, html)
     flash('A new confirmation email has been sent.', 'success')
     return redirect(url_for('user.unconfirmed'))
