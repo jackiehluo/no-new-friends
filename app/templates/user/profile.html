@@ -3,69 +3,79 @@
 {% block content %}
 
 <h1>
-  {{current_user.first_name}} {{current_user.last_name}}
+  {{user.first_name}} {{user.last_name}}
   <div class="pull-right">
-    <a class="btn btn-primary" href="{{ url_for('user.edit') }}" role="button">Edit Profile</a>
+    {% if user == current_user %}
+      <a class="btn btn-primary" href="{{ url_for('user.edit') }}" role="button">Edit Profile</a>
+    {% else %}
+      <a class="btn btn-primary" href="{{ url_for('user.contact', id=user.id) }}" role="button">Message</a>
+    {% endif %}
   </div>
 </h1><br>
 
 
 <table class="table">
   <tr>
-    <td width="200px">
-      {% if current_user.has_facebook() %}
-        <p><img src="{{ current_user.picture(200, 200) }}"></p>
+    <td width="200">
+      {% if user.has_facebook() %}
+        <p><img src="{{ user.picture(200, 200) }}"></p>
       {% else %}
         <p><img src="/static/grey.jpg"></p>
       {% endif %}
     </td>
     <td>
       <p>
-        <strong>Major</strong>: {{current_user.major}}<br>
-        <strong>Interests</strong>: {{current_user.interests}}<br></p>
-        {% if current_user.has_facebook() %}
-          <a href="http://www.facebook.com/{{ current_user.facebook }}" class="btn btn-default btn-xs" target="_blank">Facebook</a>
+        <strong>Major</strong>: {{user.major}}<br>
+        <strong>Interests</strong>: {{user.interests}}<br>
+      </p>
+      <p>
+        {% if user.has_facebook() %}
+          <a href="http://www.facebook.com/{{ user.facebook }}" class="btn btn-default btn-xs" target="_blank">Facebook</a>
         {% else %}
-          <a href="login/fb" class="btn btn-primary btn-xs">Add Facebook Profile Picture/Link</a>
+          {% if user == current_user %}
+            <a href="login/fb" class="btn btn-primary btn-xs">Add Facebook Profile Picture/Link</a>
+          {% endif %}
         {% endif %}
-        {% if current_user.has_instagram() %}
-          <a href="http://www.instagram.com/{{ current_user.instagram }}" class="btn btn-default btn-xs" target="_blank">Instagram</a>
+        {% if user.has_instagram() %}
+          <a href="http://www.instagram.com/{{ user.instagram }}" class="btn btn-default btn-xs" target="_blank">Instagram</a>
         {% endif %}
-        {% if current_user.has_twitter() %}
-          <a href="http://www.twitter.com/{{ current_user.twitter }}" class="btn btn-default btn-xs" target="_blank">Twitter</a>
+        {% if user.has_twitter() %}
+          <a href="http://www.twitter.com/{{ user.twitter }}" class="btn btn-default btn-xs" target="_blank">Twitter</a>
         {% endif %}
-      <br></p>
-      {% if current_user.has_about_me() %}
-        <h4>{{current_user.about_me}}</h4>
+      </p>
+      {% if user.has_about_me() %}
+        <h4>{{user.about_me}}</h4>
       {% endif %}
     </td>
     </tr>
 </table>
 
-<h3>Change Password</h3>
-<form class="form-reset" role="form" method="post" action="">
-  {{ form.csrf_token }}
-  <p>
-    {{ form.password(placeholder="New Password") }}
-    <span class="error">
-      {% if form.password.errors %}
-        {% for error in form.password.errors %}
-          {{ error }}
-        {% endfor %}
-      {% endif %}
-    </span>
-  </p>
-  <p>
-  {{ form.confirm(placeholder="Confirm") }}
-    <span class="error">
-      {% if form.confirm.errors %}
-        {% for error in form.confirm.errors %}
-          {{ error }}
-        {% endfor %}
-      {% endif %}
-    </span>
-  </p>
-  <button class="btn btn-success" type="submit">Update</button>
-</form>
+{% if user == current_user %}
+  <h3>Change Password</h3>
+  <form class="form-reset" role="form" method="post" action="">
+    {{ form.csrf_token }}
+    <p>
+      {{ form.password(placeholder="New Password") }}
+      <span class="error">
+        {% if form.password.errors %}
+          {% for error in form.password.errors %}
+            {{ error }}
+          {% endfor %}
+        {% endif %}
+      </span>
+    </p>
+    <p>
+    {{ form.confirm(placeholder="Confirm") }}
+      <span class="error">
+        {% if form.confirm.errors %}
+          {% for error in form.confirm.errors %}
+            {{ error }}
+          {% endfor %}
+        {% endif %}
+      </span>
+    </p>
+    <button class="btn btn-success" type="submit">Update</button>
+  </form>
+{% endif %}
 
 {% endblock %}

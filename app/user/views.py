@@ -102,22 +102,25 @@ def login():
     return render_template('user/login.html', form=form)
 
 
-@user_blueprint.route('/profile', methods=['GET', 'POST'])
+@user_blueprint.route('/profile/<id>', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
-def profile():
+def profile(id):
     form = ChangePasswordForm(request.form)
+    user = User.query.filter_by(id=id).first()
+    if user == None:
+        flash('We couldn\'t find that user!')
+        return redirect(url_for('main.home'))
     if form.validate_on_submit():
-        user = User.query.filter_by(email=current_user.email).first()
         if user:
             user.password = bcrypt.generate_password_hash(form.password.data)
             db.session.commit()
             flash('Password successfully changed.', 'success')
-            return redirect(url_for('user.profile'))
+            return redirect(url_for('user.profile', id=current_user.id))
         else:
             flash('Password change was unsuccessful.', 'danger')
             return redirect(url_for('user.profile'))
-    return render_template('user/profile.html', form=form)
+    return render_template('user/profile.html', form=form, user=user)
 
 
 @user_blueprint.route('/edit', methods=['GET', 'POST'])

@@ -13,6 +13,7 @@
     </td>
     <td style="vertical-align:middle;">
       <div class="pull-right">
+        <a class="btn btn-default" href="{{ url_for('user.profile', id=user.id) }}" role="button">Profile</a>
         <a class="btn btn-primary" href="{{ url_for('user.contact', id=user.id) }}" role="button">Message</a>
       </div>
     </td>
