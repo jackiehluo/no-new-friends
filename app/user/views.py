@@ -128,9 +128,11 @@ def edit():
     user = User.query.filter_by(email=current_user.email).first()
     if form.validate_on_submit():
         if user:
-            user.about_me = form.about_me.data
             user.major = form.major.data
             user.interests = form.interests.data
+            user.about_me = form.about_me.data
+            user.instagram = form.instagram.data
+            user.twitter = form.twitter.data
             db.session.commit()
             flash('Profile successfully updated.', 'success')
             return redirect(url_for('user.profile'))
@@ -138,9 +140,11 @@ def edit():
             flash('Profile update unsuccessful.', 'danger')
             return redirect(url_for('user.profile'))
     elif request.method != "POST":
-        form.about_me.data = user.about_me
         form.major.data = user.major
         form.interests.data = user.interests
+        form.about_me.data = user.about_me
+        form.instagram.data = user.instagram
+        form.twitter.data = user.twitter
     return render_template('user/edit.html', form=form)
 
 

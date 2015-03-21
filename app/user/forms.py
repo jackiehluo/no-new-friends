@@ -21,7 +21,7 @@ class RegisterForm(Form):
     major = TextField(
         'major',
         validators=[DataRequired(), Length(min=6, max=40)])
-    interests = TextField(
+    interests = TextAreaField(
         'interests',
         validators=[DataRequired(), Length(min=15, max=140)])
     phone = TextField(
@@ -70,12 +70,18 @@ class ChangePasswordForm(Form):
 
 
 class EditForm(Form):
-    about_me = TextField(
-        'about_me',
-        validators=[Length(min=2, max=140)])
     major = TextField(
         'major',
         validators=[Length(min=6, max=40)])
-    interests = TextField(
+    interests = TextAreaField(
         'interests',
         validators=[Length(min=15, max=140)])
+    about_me = TextAreaField(
+        'about_me',
+        validators=[Length(min=2, max=140)])
+    instagram = TextField(
+        'instagram',
+        validators=[Length(min=2, max=40)])
+    twitter = TextField(
+        'twitter',
+        validators=[Length(min=2, max=40)])

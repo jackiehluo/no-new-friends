@@ -1,5 +1,10 @@
-/* custom styles */
-
 body {
   padding-top: 70px;
+}
+
+textarea {
+    resize: none;
+    width: 224px;
+    height: 75px;
+    border: 1px solid #cccccc;
 }

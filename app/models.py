@@ -24,6 +24,8 @@ class User(db.Model):
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
     facebook = db.Column(db.String, nullable=True)
+    instagram = db.Column(db.String, nullable=True)
+    twitter = db.Column(db.String, nullable=True)
 
     def __init__(self, first_name, last_name, major, interests, phone, email,
                 password, confirmed, paid=False, admin=False, confirmed_on=None):
@@ -53,6 +55,16 @@ class User(db.Model):
 
     def has_facebook(self):
         if self.facebook:
+            return True
+        return False
+
+    def has_instagram(self):
+        if self.instagram:
+            return True
+        return False
+
+    def has_twitter(self):
+        if self.twitter:
             return True
         return False
 
