@@ -78,10 +78,10 @@ class EditForm(Form):
         validators=[Length(min=15, max=140)])
     about_me = TextAreaField(
         'about_me',
-        validators=[Length(min=2, max=140)])
+        validators=[Length(min=0, max=140)])
     instagram = TextField(
         'instagram',
-        validators=[Length(min=2, max=40)])
+        validators=[Length(min=0, max=30)])
     twitter = TextField(
         'twitter',
-        validators=[Length(min=2, max=40)])
+        validators=[Length(min=0, max=15)])

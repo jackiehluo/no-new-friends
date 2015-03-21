@@ -138,10 +138,10 @@ def edit():
             user.twitter = form.twitter.data
             db.session.commit()
             flash('Profile successfully updated.', 'success')
-            return redirect(url_for('user.profile'))
+            return redirect(url_for('user.profile', id=current_user.id))
         else:
             flash('Profile update unsuccessful.', 'danger')
-            return redirect(url_for('user.profile'))
+            return redirect(url_for('user.profile', id=current_user.id))
     elif request.method != "POST":
         form.major.data = user.major
         form.interests.data = user.interests
@@ -166,7 +166,7 @@ def social_login(provider_name):
                 user.facebook = result.user.id
                 db.session.commit()
         flash('Facebook added!', 'success')
-        return render_template('user/profile.html', form=form, result=result)
+        return render_template('user/profile.html', form=form, result=result, user=user)
     return response
 
 
