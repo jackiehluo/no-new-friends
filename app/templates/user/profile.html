@@ -33,7 +33,7 @@
           <a href="http://www.facebook.com/{{ user.facebook }}" class="btn btn-default btn-xs" target="_blank">Facebook</a>
         {% else %}
           {% if user == current_user %}
-            <a href="login/fb" class="btn btn-primary btn-xs">Add Facebook Profile Picture/Link</a>
+            <a href="{{ user.id }}/login/fb" class="btn btn-primary btn-xs">Add Facebook Profile Picture/Link</a>
           {% endif %}
         {% endif %}
         {% if user.has_instagram() %}

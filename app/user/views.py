@@ -42,7 +42,7 @@ def register():
         login_user(user)
 
         flash('A confirmation email has been sent via email.', 'success')
-        return redirect(url_for("user.unconfirmed"))
+        return redirect(url_for('user.unconfirmed'))
 
     return render_template('user/register.html', form=form)
 
@@ -51,7 +51,7 @@ def register():
 @login_required
 def unconfirmed():
     if current_user.confirmed:
-        return redirect('main.home')
+        return redirect(url_for('main.home'))
     flash('Please confirm your account!', 'warning')
     return render_template('user/unconfirmed.html')
 
@@ -119,7 +119,7 @@ def profile(id):
             return redirect(url_for('user.profile', id=current_user.id))
         else:
             flash('Password change was unsuccessful.', 'danger')
-            return redirect(url_for('user.profile'))
+            return redirect(url_for('user.profile', id=current_user.id))
     return render_template('user/profile.html', form=form, user=user)
 
 
@@ -151,22 +151,21 @@ def edit():
     return render_template('user/edit.html', form=form)
 
 
-@user_blueprint.route('/login/<provider_name>/', methods=['GET', 'POST'])
+@user_blueprint.route('/<id>/login/<provider_name>/', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
-def social_login(provider_name):
-    form = ChangePasswordForm(request.form)
+def social_login(id, provider_name):
     response = make_response()
     result = authomatic.login(WerkzeugAdapter(request, response), provider_name)
     if result:
         if result.user:
             result.user.update()
-            user = User.query.filter_by(email=current_user.email).first()
+            user = User.query.filter_by(id=current_user.id).first()
             if user:
                 user.facebook = result.user.id
                 db.session.commit()
         flash('Facebook added!', 'success')
-        return render_template('user/profile.html', form=form, result=result, user=user)
+        return redirect(url_for('user.profile', result=result, id=current_user.id))
     return response
 
 
