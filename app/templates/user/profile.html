@@ -24,6 +24,8 @@
       <p>
         {% if current_user.has_facebook() %}
           <a href="http://www.facebook.com/{{ current_user.facebook }}" class="btn btn-default btn-xs" target="_blank">Facebook</a>
+        {% else %}
+          <a href="login/fb" class="btn btn-primary btn-xs">Add Facebook Profile Picture/Link</a>
         {% endif %}
         {% if current_user.has_instagram() %}
           <a href="http://www.instagram.com/{{ current_user.instagram }}" class="btn btn-default btn-xs" target="_blank">Instagram</a>
