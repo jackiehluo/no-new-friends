@@ -12,7 +12,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         {% if current_user.confirmed and current_user.is_authenticated() %}
-          <li><a href="{{ url_for('user.profile', id=current_user.id) }}">Profile</a></li>
+          <li><a href="{{ url_for('user.profile') }}">Profile</a></li>
         {% elif current_user.is_authenticated() %}
           <li><a href="{{ url_for('user.unconfirmed') }}">Confirm</a></li>
         {% endif %}

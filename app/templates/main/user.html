@@ -1,19 +1,32 @@
 <table class="table table-hover">
   <tr>
-    <td width="80px">
+    <td width="200">
       {% if user.has_facebook() %}
-        <img src="{{ user.picture(80, 80) }}" />
+        <p><img src="{{ user.picture(200, 200) }}"></p>
       {% else %}
-        <img src="/static/grey-small.jpg">
+        <p><img src="/static/grey.jpg"></p>
       {% endif %}
     </td>
-    <td>
-      <h4><strong>{{ user.first_name }} {{ user.last_name }}</strong> ({{ user.major }})</h4>
-      <p>{{ user.interests }}</p>
+    <td style="vertical-align:middle;">
+        <h3 class="name"><strong>{{ user.first_name }} {{ user.last_name }}</strong> ({{ user.major }})</h3>
+        <p><strong>Interests</strong>: {{user.interests}}</p>
+      <p>
+        {% if user.has_facebook() %}
+          <a href="http://www.facebook.com/{{ user.facebook }}" class="btn btn-default btn-xs" target="_blank">Facebook</a>
+        {% endif %}
+        {% if user.has_instagram() %}
+          <a href="http://www.instagram.com/{{ user.instagram }}" class="btn btn-default btn-xs" target="_blank">Instagram</a>
+        {% endif %}
+        {% if user.has_twitter() %}
+          <a href="http://www.twitter.com/{{ user.twitter }}" class="btn btn-default btn-xs" target="_blank">Twitter</a>
+        {% endif %}
+      </p>
+      {% if user.has_about_me() %}
+        <h4>{{user.about_me}}</h4>
+      {% endif %}
     </td>
     <td style="vertical-align:middle;">
       <div class="pull-right">
-        <a class="btn btn-default" href="{{ url_for('user.profile', id=user.id) }}" role="button">Profile</a>
         <a class="btn btn-primary" href="{{ url_for('user.contact', id=user.id) }}" role="button">Message</a>
       </div>
     </td>

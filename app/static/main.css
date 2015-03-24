@@ -2,6 +2,10 @@ body {
   padding-top: 70px;
 }
 
+h3.name {
+    margin-top: 0;
+}
+
 textarea {
     resize: none;
     width: 224px;

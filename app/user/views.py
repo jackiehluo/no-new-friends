@@ -102,25 +102,22 @@ def login():
     return render_template('user/login.html', form=form)
 
 
-@user_blueprint.route('/profile/<id>', methods=['GET', 'POST'])
+@user_blueprint.route('/profile', methods=['GET', 'POST'])
 @login_required
 @check_confirmed
-def profile(id):
+def profile():
     form = ChangePasswordForm(request.form)
-    user = User.query.filter_by(id=id).first()
-    if user == None:
-        flash('We couldn\'t find that user!')
-        return redirect(url_for('main.home'))
+    user = User.query.filter_by(email=current_user.email).first()
     if form.validate_on_submit():
         if user:
             user.password = bcrypt.generate_password_hash(form.password.data)
             db.session.commit()
             flash('Password successfully changed.', 'success')
-            return redirect(url_for('user.profile', id=current_user.id))
+            return redirect(url_for('user.profile'))
         else:
             flash('Password change was unsuccessful.', 'danger')
-            return redirect(url_for('user.profile', id=current_user.id))
-    return render_template('user/profile.html', form=form, user=user)
+            return redirect(url_for('user.profile'))
+    return render_template('user/profile.html', form=form)
 
 
 @user_blueprint.route('/edit', methods=['GET', 'POST'])
@@ -138,10 +135,10 @@ def edit():
             user.twitter = form.twitter.data
             db.session.commit()
             flash('Profile successfully updated.', 'success')
-            return redirect(url_for('user.profile', id=current_user.id))
+            return redirect(url_for('user.profile'))
         else:
             flash('Profile update unsuccessful.', 'danger')
-            return redirect(url_for('user.profile', id=current_user.id))
+            return redirect(url_for('user.profile'))
     elif request.method != "POST":
         form.major.data = user.major
         form.interests.data = user.interests
@@ -151,21 +148,21 @@ def edit():
     return render_template('user/edit.html', form=form)
 
 
-@user_blueprint.route('/<id>/login/<provider_name>/', methods=['GET', 'POST'])
+@user_blueprint.route('/login/<provider_name>')
 @login_required
 @check_confirmed
-def social_login(id, provider_name):
+def social_login(provider_name):
     response = make_response()
     result = authomatic.login(WerkzeugAdapter(request, response), provider_name)
     if result:
         if result.user:
             result.user.update()
-            user = User.query.filter_by(id=current_user.id).first()
+            user = User.query.filter_by(email=current_user.email).first()
             if user:
                 user.facebook = result.user.id
                 db.session.commit()
         flash('Facebook added!', 'success')
-        return redirect(url_for('user.profile', result=result, id=current_user.id))
+        return redirect(url_for('user.profile', result=result))
     return response
 
 
@@ -174,12 +171,13 @@ def social_login(id, provider_name):
 @check_confirmed
 def contact(id):
     user = User.query.filter_by(id=id).first()
-    first_name = current_user.first_name
-    last_name = current_user.last_name
-    interests = current_user.interests
     phone = '(%s) %s-%s' % (current_user.phone[:3], current_user.phone[3:6], current_user.phone[6::])
-    html = render_template('user/contact.html', first_name=first_name, last_name=last_name,
-        interests=interests, phone=phone)
+    html = render_template('user/contact.html',
+                            first_name=current_user.first_name,
+                            last_name=current_user.last_name,
+                            major=current_user.major,
+                            interests=current_user.interests,
+                            phone=phone)
     subject = 'Someone on No New Friends wants to meet you!'
     send_email(user.email, subject, html)
     flash('You just messaged someone!', 'success')
