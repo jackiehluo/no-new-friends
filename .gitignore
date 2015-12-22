@@ -1,12 +1,8 @@
 *.pyc
 *.pyo
-*.sqlite
-.DS_Store
-.coverage
-flask
 app.db
 search.db
-config.py
-.vagrant/
 db_repository/
 tmp/
+flask
+*.mo
